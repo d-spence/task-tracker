@@ -1,13 +1,26 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-const AddTask = props => {
+const AddTask = ({ onAdd }) => {
   const [text, setText] = useState('');
   const [date, setDate] = useState('');
   const [reminder, setReminder] = useState(false);
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (!text) {
+      alert('Please add a task')
+    }
+
+    onAdd({ text, date, reminder });
+    // Reset default form values
+    setText('');
+    setDate('');
+    setReminder(false);
+  }
+
   return (
-    <form className="add-form">
+    <form className="add-form" onSubmit={onSubmit}>
       <div className="form-control">
         <label>Task</label>
         <input
@@ -30,6 +43,7 @@ const AddTask = props => {
         <label>Set Reminder</label>
         <input 
           type="checkbox"
+          checked={reminder}
           value={reminder}
           onChange={(e) => setReminder(e.currentTarget.checked)}
         />
@@ -44,7 +58,7 @@ const AddTask = props => {
 }
 
 AddTask.propTypes = {
-
+  onAdd: PropTypes.func,
 }
 
 export default AddTask
