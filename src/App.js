@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Header from './components/Header';
 import Tasks from './components/Tasks';
+import AddTask from './components/AddTask';
 
 // temp tasks list
 const tasksList = [
@@ -24,13 +25,37 @@ const tasksList = [
   },
 ]
 
-function App() {
+// App Component ===============================================================
+const App = () => {
   const [tasks, setTasks] = useState(tasksList);
+
+  // Delete Task
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((task) => {
+      return task.id !== id; // return false if id matches
+    }));
+  }
+
+  // Toggle Reminder
+  const toggleReminder = (id) => {
+    setTasks(tasks.map((task) => {
+      // Toggle the reminder bool value of the task with matching id
+      return task.id === id ? { ...task, reminder: !task.reminder } : task;
+    }));
+  }
 
   return (
     <div className="container">
       <Header />
-      <Tasks tasks={tasks} />
+      <AddTask />
+      {tasks.length > 0 // If no tasks, display a message instead of Tasks component
+        ? <Tasks 
+            tasks={tasks}
+            onDelete={deleteTask}
+            onToggle={toggleReminder}
+          />
+        : <h3 style={{ textAlign: 'center' }}>No Tasks. Take a breath.</h3>
+      }
     </div>
   );
 }
